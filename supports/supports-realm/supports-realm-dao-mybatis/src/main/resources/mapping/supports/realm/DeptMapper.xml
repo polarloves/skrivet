@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.realm.dao.mybatis.dept.DeptDao">
+
+
+    <insert id="insert" parameterType="com.skrivet.supports.realm.dao.core.dept.entity.add.DeptAddDQ">
+        INSERT INTO
+        <include refid="table"/>
+        (
+            ID,
+            PARENT_ID,
+            TEXT,
+            CONTACT_PEOPLE,
+            CONTACT_PHONE,
+            CONTACT_EMAIL,
+            DEPT_DESCRIBE,
+            ORDER_NUM
+        ) VALUES (
+            #{id},
+            #{parentId},
+            #{text},
+            #{contactPeople},
+            #{contactPhone},
+            #{contactEmail},
+            #{deptDescribe},
+            #{orderNum}
+        )
+    </insert>
+    <delete id="deleteById" parameterType="string">
+        DELETE FROM  <include refid="table" />  WHERE ID=#{id};
+    </delete>
+
+    <update id="update" parameterType="com.skrivet.supports.realm.dao.core.dept.entity.update.DeptUpdateDQ">
+        UPDATE
+        <include refid="table" />
+        SET
+            PARENT_ID=#{parentId},
+            TEXT=#{text},
+            CONTACT_PEOPLE=#{contactPeople},
+            CONTACT_PHONE=#{contactPhone},
+            CONTACT_EMAIL=#{contactEmail},
+            DEPT_DESCRIBE=#{deptDescribe},
+            ORDER_NUM=#{orderNum}
+        WHERE ID=#{id}
+    </update>
+
+    <select id="selectOneById" resultType="com.skrivet.supports.realm.dao.core.dept.entity.select.DeptDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns" />
+        FROM
+        <include refid="tables" />
+        WHERE a.ID=#{id}
+    </select>
+
+    <select id="selectList" resultType="com.skrivet.supports.realm.dao.core.dept.entity.select.DeptListDP">
+        SELECT
+        <include refid="listColumns" />
+        FROM
+        <include refid="tables" />
+    </select>
+
+    <sql id="tables">
+		SKRIVET_DEPT a
+	</sql>
+    <sql id="table">
+		SKRIVET_DEPT
+	</sql>
+
+    <sql id="detailColumns">
+            a.ID AS id,
+            a.PARENT_ID AS parentId,
+            a.TEXT AS text,
+            a.CONTACT_PEOPLE AS contactPeople,
+            a.CONTACT_PHONE AS contactPhone,
+            a.CONTACT_EMAIL AS contactEmail,
+            a.DEPT_DESCRIBE AS deptDescribe,
+            a.ORDER_NUM AS orderNum
+	</sql>
+    <sql id="listColumns">
+			a.ID AS id,
+            a.PARENT_ID AS parentId,
+            a.TEXT AS text,
+            a.CONTACT_PEOPLE AS contactPeople,
+            a.CONTACT_PHONE AS contactPhone,
+            a.CONTACT_EMAIL AS contactEmail,
+            a.DEPT_DESCRIBE AS deptDescribe,
+            a.ORDER_NUM AS orderNum
+	</sql>
+
+</mapper>

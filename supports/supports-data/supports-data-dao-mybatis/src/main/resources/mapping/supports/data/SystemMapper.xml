@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.data.dao.mybatis.system.SystemDao">
+    <insert id="insert" parameterType="com.skrivet.supports.data.dao.core.system.entity.add.SystemAddDQ">
+        INSERT INTO
+        <include refid="table"/>
+        (
+            ID,
+            GROUP_NAME,
+            GROUP_ID,
+            TEXT,
+            SYS_KEY,
+            SYS_VALUE,
+            REMARK,
+            ORDER_NUM
+        ) VALUES (
+            #{id},
+            #{groupName},
+            #{groupId},
+            #{text},
+            #{sysKey},
+            #{sysValue},
+            #{remark},
+            #{orderNum}
+        )
+    </insert>
+
+    <delete id="deleteById" parameterType="string">
+        DELETE FROM
+        <include refid="table"/>
+        WHERE ID=#{id}
+    </delete>
+
+    <update id="update" parameterType="com.skrivet.supports.data.dao.core.system.entity.update.SystemUpdateDQ">
+        UPDATE
+        <include refid="table"/>
+        SET
+            GROUP_NAME=#{groupName},
+            GROUP_ID=#{groupId},
+            TEXT=#{text},
+            SYS_KEY=#{sysKey},
+            SYS_VALUE=#{sysValue},
+            REMARK=#{remark},
+            ORDER_NUM=#{orderNum}
+        WHERE ID=#{id}
+    </update>
+    <select id="selectOneById" resultType="com.skrivet.supports.data.dao.core.system.entity.select.SystemDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.ID=#{id}
+    </select>
+    <select id="selectByGroupKey" resultType="com.skrivet.supports.data.dao.core.system.entity.select.SystemDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.SYS_KEY=#{sysKey} AND a.GROUP_ID=#{groupId}
+    </select>
+    <select id="selectListByGroupId" resultType="com.skrivet.supports.data.dao.core.system.entity.select.SystemListDP"
+            parameterType="string">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.GROUP_ID=#{groupId}
+        ORDER BY a.ORDER_NUM ASC
+    </select>
+    <select id="selectPageList" resultType="com.skrivet.supports.data.dao.core.system.entity.select.SystemListDP"
+            parameterType="com.skrivet.supports.data.dao.core.system.entity.select.SystemSelectPageDQ">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+        <include refid="selectPageWheres"/>
+        <include refid="pageOrderCondition"/>
+    </select>
+    <select id="selectPageCount" resultType="long"
+            parameterType="com.skrivet.supports.data.dao.core.system.entity.select.SystemSelectPageDQ">
+        SELECT count(a.ID)
+        FROM
+        <include refid="tables"/>
+        <include refid="selectPageWheres"/>
+    </select>
+    <select id="groups" resultType="com.skrivet.supports.data.dao.core.system.entity.select.SystemGroupDP">
+        SELECT DISTINCT GROUP_NAME AS text,GROUP_ID AS value
+        FROM
+        <include refid="table"/>
+        ORDER BY GROUP_NAME ASC
+    </select>
+
+    <sql id="tables">
+		SKRIVET_SYSTEM a
+	</sql>
+    <sql id="table">
+		SKRIVET_SYSTEM
+	</sql>
+
+    <sql id="listColumns">
+			a.ID AS id,
+			a.GROUP_NAME AS groupName,
+			a.GROUP_ID AS groupId,
+			a.TEXT AS text,
+			a.SYS_VALUE AS sysValue,
+			a.SYS_KEY AS sysKey,
+			a.REMARK AS remark,
+			a.ORDER_NUM AS orderNum
+	</sql>
+    <sql id="detailColumns">
+			a.ID AS id,
+			a.GROUP_NAME AS groupName,
+			a.GROUP_ID AS groupId,
+			a.TEXT AS text,
+			a.SYS_VALUE AS sysValue,
+			a.SYS_KEY AS sysKey,
+			a.REMARK AS remark,
+			a.ORDER_NUM AS orderNum
+	</sql>
+
+    <sql id="selectPageWheres">
+        <where>
+            <if test="groupName != null and groupName != ''">
+                AND a.GROUP_NAME like SKRIVET_LIKE('%',#{groupName},'%')
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND a.GROUP_ID=#{groupId}
+            </if>
+            <if test="text != null and text != ''">
+                AND a.TEXT like SKRIVET_LIKE('%',#{text},'%')
+            </if>
+            <if test="sysKey != null and sysKey != ''">
+                AND a.SYS_KEY like SKRIVET_LIKE('%',#{sysKey},'%')
+            </if>
+            <if test="sysValue != null and sysValue != ''">
+                AND a.SYS_VALUE like SKRIVET_LIKE('%',#{sysValue},'%')
+            </if>
+            <if test="remark != null and remark != ''">
+                AND a.REMARK like SKRIVET_LIKE('%',#{remark},'%')
+            </if>
+            <if test="orderNum != null">
+                AND a.ORDER_NUM=#{orderNum}
+            </if>
+        </where>
+    </sql>
+
+
+    <sql id="pageOrderCondition">
+        <if test="sort !=null and sort !=''">
+            <choose>
+                <when test='sort=="groupName"'>ORDER BY a.GROUP_NAME ${order}</when>
+                <when test='sort=="groupId"'>ORDER BY a.GROUP_ID ${order}</when>
+                <when test='sort=="text"'>ORDER BY a.TEXT ${order}</when>
+                <when test='sort=="sysKey"'>ORDER BY a.SYS_KEY ${order}</when>
+                <when test='sort=="sysValue"'>ORDER BY a.SYS_VALUE ${order}</when>
+                <when test='sort=="orderNum"'>ORDER BY a.ORDER_NUM ${order}</when>
+                <when test='sort=="remark"'>ORDER BY a.REMARK ${order}</when>
+            </choose>
+        </if>
+    </sql>
+</mapper>

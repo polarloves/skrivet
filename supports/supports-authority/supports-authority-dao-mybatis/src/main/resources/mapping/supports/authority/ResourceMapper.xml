@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.authority.dao.mybatis.resource.ResourceDao">
+    <insert id="insert" parameterType="com.skrivet.supports.authority.dao.core.resource.entity.add.ResourceAddDQ">
+        INSERT INTO
+        <include refid="table"/>
+        (
+            ID,
+            TYPE,
+            VALUE,
+            TEXT,
+            REMARK,
+            ORDER_NUM
+        ) VALUES (
+            #{id},
+            #{type},
+            #{value},
+            #{text},
+            #{remark},
+            #{orderNum}
+        )
+    </insert>
+
+
+    <delete id="deleteById" parameterType="string">
+        DELETE FROM  <include refid="table"/>  WHERE ID=#{id};
+        DELETE FROM   SKRIVET_RESOURCE_PERMISSION  WHERE RESOURCE_ID=#{id};
+    </delete>
+
+    <update id="update"
+            parameterType="com.skrivet.supports.authority.dao.core.resource.entity.update.ResourceUpdateDQ">
+        UPDATE
+        <include refid="table"/>
+        SET
+        TEXT=#{text},
+        VALUE=#{value},
+        REMARK=#{remark},
+        ORDER_NUM=#{orderNum},
+        TYPE=#{type}
+        WHERE ID=#{id}
+    </update>
+
+    <select id="selectOneById"
+            resultType="com.skrivet.supports.authority.dao.core.resource.entity.select.ResourceDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.ID=#{id}
+    </select>
+    <select id="selectOneByValue"
+            resultType="com.skrivet.supports.authority.dao.core.resource.entity.select.ResourceDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.VALUE=#{value}
+    </select>
+
+    <select id="selectList" resultType="com.skrivet.supports.authority.dao.core.resource.entity.select.ResourceListDP">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+    </select>
+
+    <select id="selectPageList"
+            resultType="com.skrivet.supports.authority.dao.core.resource.entity.select.ResourceListDP"
+            parameterType="com.skrivet.supports.authority.dao.core.resource.entity.select.ResourceSelectPageDQ">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+        <include refid="selectPageWheres"/>
+        <include refid="pageOrderCondition"/>
+    </select>
+    
+    <select id="selectPageCount" resultType="long"
+            parameterType="com.skrivet.supports.authority.dao.core.resource.entity.select.ResourceSelectPageDQ">
+        SELECT count(a.ID)
+        FROM
+        <include refid="tables"/>
+        <include refid="selectPageWheres"/>
+    </select>
+    <sql id="tables">
+		SKRIVET_RESOURCE a
+	</sql>
+    <sql id="table">
+		SKRIVET_RESOURCE
+	</sql>
+
+
+    <sql id="listColumns">
+			a.ID AS id,
+			a.TEXT AS text,
+			a.VALUE AS value,
+			a.REMARK AS remark,
+			a.ORDER_NUM AS orderNum,
+			a.TYPE AS type
+	</sql>
+    <sql id="detailColumns">
+			a.ID AS id,
+			a.TEXT AS text,
+			a.VALUE AS value,
+			a.REMARK AS remark,
+			a.ORDER_NUM AS orderNum,
+			a.TYPE AS type
+	</sql>
+    <sql id="selectPageWheres">
+        <where>
+            <if test="text != null and text != ''">
+                AND a.TEXT like SKRIVET_LIKE('%',#{text},'%')
+            </if>
+            <if test="value != null and value != ''">
+                AND a.VALUE like SKRIVET_LIKE('%',#{value},'%')
+            </if>
+            <if test="remark != null and remark != ''">
+                AND a.REMARK like SKRIVET_LIKE('%',#{remark},'%')
+            </if>
+            <if test="type != null">
+                AND a.type =#{type}
+            </if>
+        </where>
+    </sql>
+    <sql id="pageOrderCondition">
+        <if test="sort !=null and sort !=''">
+            <choose>
+                <when test='sort=="text"'>ORDER BY a.TEXT ${order}</when>
+                <when test='sort=="value"'>ORDER BY a.VALUE ${order}</when>
+                <when test='sort=="orderNum"'>ORDER BY a.ORDER_NUM ${order}</when>
+                <when test='sort=="type"'>ORDER BY a.TYPE ${order}</when>
+            </choose>
+        </if>
+    </sql>
+</mapper>

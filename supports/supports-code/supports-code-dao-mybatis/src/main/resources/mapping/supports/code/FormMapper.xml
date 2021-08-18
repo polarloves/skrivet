@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.code.dao.mybatis.form.FormDao">
+    <resultMap id="ColumnDP" type="com.skrivet.supports.code.dao.core.form.entity.select.ColumnDP">
+        <result column="validate" property="validate"  typeHandler="com.skrivet.components.mybatis.handler.VarcharJsonTypeHandler"/>
+        <result column="display" property="display"  typeHandler="com.skrivet.components.mybatis.handler.VarcharJsonTypeHandler"/>
+        <result column="extInfo" property="extInfo"  typeHandler="com.skrivet.components.mybatis.handler.VarcharJsonTypeHandler"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.skrivet.supports.code.dao.core.form.entity.add.FormAddDQ">
+        INSERT INTO
+        <include refid="table"/>
+        (
+            ID,
+            FORM_NAME,
+            DB_TABLE_NAME,
+            MODULE_NAME,
+            PACKAGE_NAME,
+            ACCESS_PATH,
+            FORM_TYPE,
+            TEMPLATE,
+            PARENT_CODE,
+            PROJECT_ID,
+            GROUP_ID,
+            APPEND_OPERATOR,
+            APPEND_REMARK,
+            CACHE_ENABLE,
+            CACHE_KEY,
+            APPEND_REMARK_COUNT,
+            VERSION,
+            SKRIVET_VERSION
+        ) VALUES (
+            #{id},
+            #{formName},
+            #{dbTableName},
+            #{moduleName},
+            #{packageName},
+            #{accessPath},
+            #{formType},
+            #{template},
+            #{parentCode},
+            #{projectId},
+            #{groupId},
+            #{appendOperator},
+            #{appendRemark},
+            #{cacheEnable},
+            #{cacheKey},
+            #{appendRemarkCount},
+            #{version},
+            #{skrivetVersion}
+        )
+    </insert>
+    <insert id="insertColumn" parameterType="com.skrivet.supports.code.dao.core.form.entity.add.ColumnAddDQ">
+        INSERT INTO
+        <include refid="columnTable"/>
+        (
+            ID,
+            FORM_ID,
+            JAVA_NAME,
+            JAVA_TYPE,
+            DB_COLUMN_NAME,
+            VALIDATE,
+            EXT_INFO,
+            PRIMARY_KEY,
+            DISPLAY,
+            ORDER_NUM,
+            PARENT_KEY,
+            FIELD_NAME,
+            VIEW_TYPE,
+            MATCH_TYPE
+        ) VALUES (
+            #{id},
+            #{formId},
+            #{javaName},
+            #{javaType},
+            #{dbColumnName},
+            #{validate,typeHandler=com.skrivet.components.mybatis.handler.VarcharJsonTypeHandler},
+            #{extInfo,typeHandler=com.skrivet.components.mybatis.handler.VarcharJsonTypeHandler},
+            #{primaryKey},
+            #{display,typeHandler=com.skrivet.components.mybatis.handler.VarcharJsonTypeHandler},
+            #{orderNum},
+            #{parentKey},
+            #{fieldName},
+            #{viewType},
+            #{matchType}
+        )
+    </insert>
+    <delete id="deleteById" parameterType="string">
+        DELETE FROM <include refid="table"/> WHERE ID=#{id}
+    </delete>
+    <delete id="deleteColumnByFormId" parameterType="string">
+        DELETE FROM <include refid="columnTable"/> WHERE FORM_ID=#{formId}
+    </delete>
+    <update id="update" parameterType="com.skrivet.supports.code.dao.core.form.entity.update.FormUpdateDQ">
+        UPDATE
+        <include refid="table"/>
+        SET
+            FORM_NAME= #{formName},
+            DB_TABLE_NAME= #{dbTableName},
+            MODULE_NAME= #{moduleName},
+            PACKAGE_NAME= #{packageName},
+            ACCESS_PATH=  #{accessPath},
+            FORM_TYPE=  #{formType},
+            TEMPLATE=#{template},
+            PARENT_CODE=#{parentCode},
+            PROJECT_ID= #{projectId},
+            GROUP_ID=#{groupId},
+            CACHE_ENABLE=#{cacheEnable},
+            CACHE_KEY=#{cacheKey},
+            APPEND_OPERATOR=#{appendOperator},
+            APPEND_REMARK=#{appendRemark},
+            APPEND_REMARK_COUNT=#{appendRemarkCount},
+            VERSION=#{version},
+            SKRIVET_VERSION=#{skrivetVersion}
+        WHERE ID=#{id}
+    </update>
+
+    <select id="selectOneById" resultType="com.skrivet.supports.code.dao.core.form.entity.select.FormDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.ID=#{id}
+    </select>
+
+    <select id="selectColumnsByFormId" resultMap="ColumnDP" parameterType="string">
+        SELECT
+            a.ID AS id,
+            a.FORM_ID AS formId,
+            a.JAVA_NAME AS javaName,
+            a.JAVA_TYPE AS javaType,
+            a.DB_COLUMN_NAME AS dbColumnName,
+            a.VALIDATE AS validate,
+            a.EXT_INFO AS extInfo,
+            a.PRIMARY_KEY AS primaryKey,
+            a.DISPLAY AS display,
+            a.ORDER_NUM AS orderNum,
+            a.PARENT_KEY  AS parentKey,
+            a.FIELD_NAME AS fieldName,
+            a.VIEW_TYPE AS viewType,
+            a.MATCH_TYPE AS matchType
+        FROM
+        <include refid="columnTables"/>
+        WHERE
+         a.FORM_ID=#{formId}
+        ORDER BY a.ORDER_NUM ASC
+    </select>
+    <select id="selectPageList" resultType="com.skrivet.supports.code.dao.core.form.entity.select.FormListDP"
+            parameterType="com.skrivet.supports.code.dao.core.form.entity.select.FormSelectPageDQ">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+        <include refid="selectPageWheres"/>
+        <include refid="pageOrderCondition"/>
+    </select>
+    <select id="selectList" resultType="com.skrivet.supports.code.dao.core.form.entity.select.FormListDP" >
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+       ORDER BY a.MODULE_NAME ASC
+    </select>
+    <select id="children" resultType="com.skrivet.supports.code.dao.core.form.entity.select.FormListDP">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.PARENT_CODE=#{parentId}
+    </select>
+    <select id="selectFormDict" resultType="com.skrivet.supports.code.dao.core.form.entity.select.FormDictDP">
+        SELECT
+            a.FORM_NAME AS formName,
+            a.MODULE_NAME AS moduleName,
+            a.ID AS id
+        FROM
+        <include refid="tables"/>
+        ORDER BY a.MODULE_NAME ASC
+    </select>
+    <select id="selectPageCount" resultType="long"
+            parameterType="com.skrivet.supports.code.dao.core.form.entity.select.FormSelectPageDQ">
+        SELECT count(a.ID)
+        FROM
+        <include refid="tables"/>
+        <include refid="selectPageWheres"/>
+    </select>
+
+
+    <sql id="tables">
+		SKRIVET_CODE_FORM a
+	</sql>
+    <sql id="table">
+		SKRIVET_CODE_FORM
+	</sql>
+    <sql id="columnTables">
+		SKRIVET_CODE_COLUMN a
+	</sql>
+    <sql id="columnTable">
+		SKRIVET_CODE_COLUMN
+	</sql>
+    <sql id="listColumns">
+			a.ID AS id,
+            a.FORM_NAME AS formName,
+            a.DB_TABLE_NAME AS dbTableName,
+            a.MODULE_NAME AS moduleName,
+            a.PACKAGE_NAME AS packageName,
+            a.ACCESS_PATH AS accessPath,
+            a.FORM_TYPE AS formType,
+            a.TEMPLATE AS template,
+            a.PARENT_CODE AS parentCode,
+            a.PROJECT_ID AS projectId,
+            a.GROUP_ID AS groupId
+	</sql>
+    <sql id="detailColumns">
+			a.ID AS id,
+            a.FORM_NAME AS formName,
+            a.DB_TABLE_NAME AS dbTableName,
+            a.MODULE_NAME AS moduleName,
+            a.PACKAGE_NAME AS packageName,
+            a.ACCESS_PATH AS accessPath,
+            a.FORM_TYPE AS formType,
+            a.TEMPLATE AS template,
+            a.PARENT_CODE AS parentCode,
+            a.PROJECT_ID AS projectId,
+            a.GROUP_ID AS groupId,
+            a.APPEND_OPERATOR AS appendOperator,
+            a.APPEND_REMARK AS appendRemark,
+            a.CACHE_ENABLE AS cacheEnable,
+            a.CACHE_KEY AS cacheKey,
+            a.APPEND_REMARK_COUNT AS appendRemarkCount,
+            a.VERSION AS version,
+            a.SKRIVET_VERSION AS skrivetVersion
+	</sql>
+
+    <sql id="selectPageWheres">
+        <where>
+            <if test="formName != null and formName != ''">
+                AND a.FORM_NAME like SKRIVET_LIKE('%',#{formName},'%')
+            </if>
+            <if test="dbTableName != null and dbTableName != ''">
+                AND a.DB_TABLE_NAME like SKRIVET_LIKE('%',#{dbTableName},'%')
+            </if>
+            <if test="projectId != null and projectId != ''">
+                AND a.PROJECT_ID like SKRIVET_LIKE('%',#{projectId},'%')
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND a.GROUP_ID like SKRIVET_LIKE('%',#{groupId},'%')
+            </if>
+            <if test="moduleName != null and moduleName != ''">
+                AND a.MODULE_NAME like SKRIVET_LIKE('%',#{moduleName},'%')
+            </if>
+            <if test="formType != null">
+                AND a.FORM_TYPE =#{formType}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="pageOrderCondition">
+        <if test="sort !=null and sort !=''">
+            <choose>
+                <when test='sort=="formName"'>ORDER BY a.FORM_NAME ${order}</when>
+                <when test='sort=="dbTableName"'>ORDER BY a.DB_TABLE_NAME ${order}</when>
+            </choose>
+        </if>
+    </sql>
+</mapper>

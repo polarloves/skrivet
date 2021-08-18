@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>components</artifactId>
+        <groupId>com.skrivet</groupId>
+        <version>1.0.0-RELEASE</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <common-pool-version>2.7.0</common-pool-version>
+    </properties>
+    <artifactId>components-redis</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>${common-pool-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>core-configuration</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>core-toolkit</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

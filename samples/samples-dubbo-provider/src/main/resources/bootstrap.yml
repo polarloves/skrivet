@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: test-provider
+  profiles:
+    active: @filter-resource-name@
+  cloud:
+    nacos:
+      config:
+        server-addr: 106.12.153.115:8848
+        group: test-provider
+        file-extension: yaml
+        namespace: aa189fb7-2b01-47b9-9800-8cccd3a2520c

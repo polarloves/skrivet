@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>supports-code</artifactId>
+        <groupId>com.skrivet</groupId>
+        <version>1.0.0-RELEASE</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>supports-code-service-impl</artifactId>
+    <properties>
+        <freemarker.version>2.3.30</freemarker.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>supports-code-service-core</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>supports-code-dao-core</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>core-toolkit</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>plugins-security-core</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>plugins-queue-core</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+        </dependency>
+
+    </dependencies>
+</project>

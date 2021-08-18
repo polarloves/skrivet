@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.authority.dao.mybatis.permission.PermissionDao">
+	<insert id="insert" parameterType="com.skrivet.supports.authority.dao.core.permission.entity.add.PermissionAddDQ" >
+		INSERT INTO
+		<include refid="table" />
+		(
+			ID,
+			PARENT_ID,
+			VALUE,
+			TEXT,
+			REMARK,
+			ORDER_NUM
+		) VALUES (
+			#{id},
+			#{parentId},
+			#{value},
+			#{text},
+			#{remark},
+			#{orderNum}
+		)
+	</insert>
+	<insert id="insertResourcePermissions"
+			parameterType="com.skrivet.supports.authority.dao.core.permission.entity.add.ResourcePermissionAddDQ">
+		INSERT INTO
+		<include refid="resourcePermissionTable"/>
+		(
+		ID,
+		RESOURCE_ID,
+		PERMISSION_ID
+		) VALUES
+		<foreach collection="permissions" item="list" index="index" separator=",">
+			(
+			#{list.id},
+			#{resourceId},
+			#{list.permissionId}
+			)
+		</foreach>
+	</insert>
+	<insert id="insertRolePermissions" parameterType="com.skrivet.supports.authority.dao.core.permission.entity.add.RolePermissionAddDQ" >
+		INSERT INTO
+		<include refid="rolePermissionTable" />
+			(
+				ID,
+				ROLE_ID,
+				PERMISSION_ID
+			) VALUES
+		<foreach collection ="permissions" item="list" index= "index" separator =",">
+		     (
+				 #{list.id},
+				 #{roleId},
+				 #{list.permissionId}
+		     )
+		 </foreach >
+	</insert>
+	<delete id="deleteResourcePermissionByResourceId" parameterType="string">
+		DELETE FROM
+		<include refid="resourcePermissionTable"/>
+		WHERE
+		RESOURCE_ID=#{resourceId}
+	</delete>
+	<delete id="deleteRolePermissionsByRoleId"  parameterType="string">
+		DELETE FROM
+		<include refid="rolePermissionTable" />
+		WHERE
+		ROLE_ID=#{roleId}
+	</delete>
+	<delete id="deleteById" parameterType="string">
+		DELETE FROM	<include refid="table" />	WHERE ID=#{id};
+		DELETE FROM  SKRIVET_ROLE_PERMISSION  WHERE PERMISSION_ID=#{id};
+		DELETE FROM  SKRIVET_RESOURCE_PERMISSION  WHERE PERMISSION_ID=#{id};
+	</delete>
+	<update id="update" parameterType="com.skrivet.supports.authority.dao.core.permission.entity.update.PermissionUpdateDQ">
+		UPDATE
+		<include refid="table" />
+		SET
+			TEXT=#{text},
+			VALUE=#{value},
+			REMARK=#{remark},
+			ORDER_NUM=#{orderNum},
+			PARENT_ID=#{parentId}
+		WHERE ID=#{id}
+	</update>
+	<select id="selectResourcePermissionIds" resultType="string" parameterType="string">
+		SELECT
+			PERMISSION_ID AS permissionId
+		FROM
+		<include refid="resourcePermissionTable"/>
+		WHERE
+			RESOURCE_ID=#{resourceId}
+	</select>
+	<select id="selectOneById" resultType="com.skrivet.supports.authority.dao.core.permission.entity.select.PermissionDetailDP"
+		parameterType="string">
+		SELECT
+		<include refid="detailColumns" />
+		FROM
+		<include refid="tables" />
+		WHERE a.ID=#{id}
+	</select>
+	<select id="selectOneByValue" resultType="com.skrivet.supports.authority.dao.core.permission.entity.select.PermissionDetailDP"
+			parameterType="string">
+		SELECT
+		<include refid="detailColumns" />
+		FROM
+		<include refid="tables" />
+		WHERE a.VALUE=#{value}
+	</select>
+
+	<select id="selectList" resultType="com.skrivet.supports.authority.dao.core.permission.entity.select.PermissionListDP">
+		SELECT
+		<include refid="listColumns" />
+		FROM
+		<include refid="tables" />
+	</select>
+	<select id="selectRolePermissionIds" resultType="string" parameterType="string">
+		SELECT
+			PERMISSION_ID AS permissionId
+		FROM
+		<include refid="rolePermissionTable" />
+		WHERE
+			ROLE_ID=#{roleId}
+	</select>
+
+    <sql id="tables">
+		SKRIVET_PERMISSION a
+	</sql>
+    <sql id="table">
+		SKRIVET_PERMISSION
+	</sql>
+	<sql id="rolePermissionTable">
+		SKRIVET_ROLE_PERMISSION
+	</sql>
+	<sql id="resourcePermissionTable">
+		SKRIVET_RESOURCE_PERMISSION
+	</sql>
+
+
+    <sql id="listColumns">
+			a.ID AS id,
+			a.TEXT AS text,
+			a.VALUE AS value,
+			a.REMARK AS remark,
+			a.ORDER_NUM AS orderNum,
+			a.PARENT_ID AS parentId
+	</sql>
+    <sql id="detailColumns">
+			a.ID AS id,
+			a.TEXT AS text,
+			a.VALUE AS value,
+			a.REMARK AS remark,
+			a.ORDER_NUM AS orderNum,
+			a.PARENT_ID AS parentId
+	</sql>
+
+</mapper>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.menu.dao.mybatis.item.MenuItemDao">
+	<resultMap id="MenuItemList" type="com.skrivet.supports.menu.dao.core.item.entity.select.MenuItemListDP">
+		<result column="permissionList" property="permissionList"  typeHandler="com.skrivet.components.mybatis.handler.BlobJsonTypeHandler"/>
+		<result column="roleList" property="roleList"  typeHandler="com.skrivet.components.mybatis.handler.BlobJsonTypeHandler"/>
+	</resultMap>
+	<resultMap id="MenuItemDetail" type="com.skrivet.supports.menu.dao.core.item.entity.select.MenuItemDetailDP">
+		<result column="permissionList" property="permissionList"  typeHandler="com.skrivet.components.mybatis.handler.BlobJsonTypeHandler"/>
+		<result column="roleList" property="roleList"  typeHandler="com.skrivet.components.mybatis.handler.BlobJsonTypeHandler"/>
+	</resultMap>
+	<insert id="insert" parameterType="com.skrivet.supports.menu.dao.core.item.entity.add.MenuItemAddDQ">
+		INSERT INTO
+		<include refid="table"/>
+		(
+			ID,
+			PARENT_ID,
+			MENU_KEY,
+			TITLE,
+			COMPONENT,
+			ICON,
+			PATH,
+			ORDER_NUM,
+			REDIRECT,
+			PERMISSION_LIST,
+			ROLE_LIST,
+			HIDE_ON_EMPTY
+		) VALUES (
+			#{id},
+			#{parentId},
+			#{menuKey},
+			#{title},
+			#{component},
+			#{icon},
+			#{path},
+			#{orderNum},
+			#{redirect},
+			#{permissionList,typeHandler=com.skrivet.components.mybatis.handler.BlobJsonTypeHandler},
+			#{roleList,typeHandler=com.skrivet.components.mybatis.handler.BlobJsonTypeHandler},
+			#{hideOnEmpty}
+		)
+	</insert>
+
+	<delete id="deleteById" parameterType="string">
+		DELETE FROM
+		<include refid="table"/>
+		WHERE ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.skrivet.supports.menu.dao.core.item.entity.update.MenuItemUpdateDQ">
+		UPDATE
+		<include refid="table"/>
+		SET
+			PARENT_ID=#{parentId},
+			MENU_KEY = #{menuKey},
+			TITLE = #{title},
+			COMPONENT = #{component},
+			ICON = #{icon},
+			PATH = #{path},
+			ORDER_NUM = #{orderNum},
+			REDIRECT = #{redirect},
+			PERMISSION_LIST = #{permissionList,typeHandler=com.skrivet.components.mybatis.handler.BlobJsonTypeHandler},
+			ROLE_LIST = #{roleList,typeHandler=com.skrivet.components.mybatis.handler.BlobJsonTypeHandler},
+			HIDE_ON_EMPTY = #{hideOnEmpty}
+		WHERE ID=#{id}
+	</update>
+
+
+	<select id="selectOneById" resultMap="MenuItemDetail"
+			parameterType="string">
+		SELECT
+		<include refid="detailColumns"/>
+		FROM
+		<include refid="tables"/>
+		WHERE a.ID=#{id}
+	</select>
+	<select id="templateItemIds" resultType="string">
+		SELECT MENU_ITEM_ID
+		FROM SKRIVET_MENU_TEMPLATE_ITEM
+		WHERE MENU_TEMPLATE_ID=#{templateId}
+	</select>
+	<insert id="insertTemplateItems"
+			parameterType="com.skrivet.supports.menu.dao.core.item.entity.add.TemplateItemAddDQ">
+		INSERT INTO
+		SKRIVET_MENU_TEMPLATE_ITEM
+		(
+		ID,
+		MENU_TEMPLATE_ID,
+		MENU_ITEM_ID
+		) VALUES
+		<foreach collection="items" item="list" index="index" separator=",">
+			(
+			#{list.id},
+			#{templateId},
+			#{list.itemId}
+			)
+		</foreach>
+	</insert>
+	<delete id="deleteTemplateItemByTemplateId" parameterType="string">
+		DELETE FROM
+		SKRIVET_MENU_TEMPLATE_ITEM
+		WHERE
+		MENU_TEMPLATE_ID=#{templateId}
+	</delete>
+	<select id="selectList" resultMap="MenuItemList" >
+		SELECT
+		<include refid="listColumns"/>
+		FROM
+		<include refid="tables"/>
+		<include refid="orderCondition"/>
+	</select>
+	
+	<select id="selectCountByParentKey" resultType="long"
+			parameterType="string">
+		SELECT COUNT(a.ID)
+		FROM
+		<include refid="tables"/>
+		WHERE a.PARENT_ID = #{parentId}
+	</select>
+	
+	<sql id="tables">
+		SKRIVET_MENU_ITEM a
+	</sql>
+	<sql id="table">
+		SKRIVET_MENU_ITEM
+	</sql>
+
+	<sql id="listColumns">
+			a.ID AS id,
+			a.PARENT_ID as parentId,
+			a.MENU_KEY AS menuKey,
+			a.TITLE AS title,
+			a.COMPONENT AS component,
+			a.ICON AS icon,
+			a.PATH AS path,
+			a.ORDER_NUM AS orderNum,
+			a.REDIRECT AS redirect,
+			a.PERMISSION_LIST AS permissionList,
+			a.ROLE_LIST AS roleList,
+			a.HIDE_ON_EMPTY AS hideOnEmpty
+	</sql>
+	<sql id="detailColumns">
+			a.ID AS id,
+			a.PARENT_ID as parentId,
+			a.MENU_KEY AS menuKey,
+			a.TITLE AS title,
+			a.COMPONENT AS component,
+			a.ICON AS icon,
+			a.PATH AS path,
+			a.ORDER_NUM AS orderNum,
+			a.REDIRECT AS redirect,
+			a.PERMISSION_LIST AS permissionList,
+			a.ROLE_LIST AS roleList,
+			a.HIDE_ON_EMPTY AS hideOnEmpty
+	</sql>
+	<sql id="orderCondition">
+		ORDER BY	a.ORDER_NUM ASC
+	</sql>
+
+</mapper>

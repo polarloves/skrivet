@@ -1,0 +1,58 @@
+logging:
+  config: classpath:logback-cloud.xml #配置文件路径，固定
+  path: e:/testlog #日志文件路径
+skrivet:
+    project:
+        name: test #项目名称
+        package: cn.skrivet.test #项目包名
+    validate:
+        service: false  #是否在service层启用数据校验
+    security:
+        type: jwt #权限管理类型，支持：shiro,jwt,默认为shiro
+        serviceCheck: false #是否在service层启用权限校验,默认不启用
+        webCheck: true #是否在web层启用权限校验,默认启用
+    doc:
+        enable: true #是否启用接口文档,默认不启用
+        enableSkrivetDoc: true #是否启用框架的接口文档，默认启用
+        enableProjectDoc: true #是否启用项目的接口文档，默认启用
+    dynamicDatabase: true #是否支持动态数据源，默认不支持
+    jwt:
+        signKey: 123456 #jwt秘钥
+        tokenKey: token #jwt中,token保存的key,默认为token
+        actionKey: action #jwt中,action保存的key,默认为action,其值有三个:create,delete,update
+        timeout: 1800000 #token超时时间，单位毫秒，默认为30分钟
+        refreshBeforeTimeout: 300000 #token刷新时间，默认5分钟
+    shiro:  #shiro配置，当security.type为shiro时才有效
+        loginUrl: /login #登录的路径，多个以,隔开,默认为login
+        cookie:
+            name: sid  #cookie key，默认为sid
+            maxAge: -1 #cookie过期时间,单位为秒，-1表示浏览器关闭就过期 ,默认为-1
+        session:
+            deleteInvalid: true #是否删除无效的session，默认为true
+            timeout: 10000     #session过期时间，单位为毫秒,默认为30分钟，当值为-1000时，永不过期
+            cacheName: shiroSession #session缓存key,默认为：shiroSession
+    redis:
+            host: 127.0.0.1
+            port: 6379
+            timeout: 2000
+            jedis:
+                pool:
+                    maxIdle: 10
+                    minIdle: 5
+                    maxActive: 20
+
+    cache:
+        type: redis
+        value-serialization: json
+    database:
+        system:
+            type: com.zaxxer.hikari.HikariDataSource
+            names: data,realm,authority
+            destroyMethod: close
+            default: true
+            properties:
+                username: root
+                password: root
+                jdbcUrl: jdbc:mysql://127.0.0.1:3306/ttttt?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+                driverClassName: com.mysql.jdbc.Driver
+                idleTimeout: 30000

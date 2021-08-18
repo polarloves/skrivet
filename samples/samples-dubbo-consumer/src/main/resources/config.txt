@@ -1,0 +1,50 @@
+logging:
+  config: classpath:logback-cloud.xml
+  path: /home/logs
+dubbo:
+    application:
+        id: test-consumer-application
+        name: test-consumer
+    registry:
+        id: dubbo
+        address: nacos://106.12.153.115:8848
+        parameters[namespace]: aa189fb7-2b01-47b9-9800-8cccd3a2520c
+skrivet:
+    file:
+        type: local
+        path: /home/files
+    project:
+        name: test
+        package: cn.skrivet.test
+    security:
+        type: shiro
+        serviceCheck: false
+        webCheck: true
+    doc:
+        enable: true
+    jwt:
+        signKey: 123456
+    redis:
+            host: 127.0.0.1
+            port: 6379
+            timeout: 2000
+            jedis:
+                pool:
+                    maxIdle: 10
+                    minIdle: 5
+                    maxActive: 20
+    shiro:
+        cookie:
+            name: sid
+            maxAge: -1
+        session:
+            deleteInvalid: true
+            timeout: 1800000
+        loginUrl: /user/session/login
+        accountProperties:
+            passwordRetryCount: 5
+            accountLockTime: 300000
+            maxAccount: 1
+    cache:
+        type: redis
+        value-serialization: json

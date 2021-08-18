@@ -1,0 +1,11 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo-fixed"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://dubbo.apache.org/schema/dubbo-fixed http://dubbo.apache.org/schema/dubbo/dubbo-fixed.xsd">
+    <dubbo:reference interface="com.skrivet.supports.authority.service.core.permission.PermissionService" id="permissionService"/>
+    <dubbo:reference interface="com.skrivet.supports.authority.service.core.resource.ResourceService" id="resourceService"/>
+    <dubbo:reference interface="com.skrivet.supports.authority.service.core.role.RoleService" id="roleService"/>
+    <dubbo:reference interface="com.skrivet.plugins.security.core.service.PermissionSetService" id="permissionSetService"/>
+    <dubbo:reference interface="com.skrivet.plugins.security.core.service.ResourceService" id="securityResourceService"/>
+</beans>

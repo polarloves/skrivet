@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.menu.dao.mybatis.template.MenuTemplateDao">
+	<insert id="insert" parameterType="com.skrivet.supports.menu.dao.core.template.entity.add.MenuTemplateAddDQ">
+		INSERT INTO
+		<include refid="table"/>
+		(
+			ID,
+			TEMPLATE_NAME,
+			DEFAULT_TEMPLATE,
+			TEMPLATE_REMARK
+		) VALUES (
+			#{id},
+			#{templateName},
+			#{defaultTemplate},
+			#{templateRemark}
+		)
+	</insert>
+
+	<delete id="deleteById" parameterType="string">
+		DELETE FROM
+		<include refid="table"/>
+		WHERE ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.skrivet.supports.menu.dao.core.template.entity.update.MenuTemplateUpdateDQ">
+		UPDATE
+		<include refid="table"/>
+		SET
+			TEMPLATE_NAME = #{templateName},
+			TEMPLATE_REMARK = #{templateRemark}
+		WHERE ID=#{id}
+	</update>
+
+	<update id="setDefault" >
+		UPDATE
+		<include refid="table"/>
+		SET
+			DEFAULT_TEMPLATE='1'
+		WHERE ID=#{id}
+	</update>
+
+	<update id="clearDefault" >
+		UPDATE
+		<include refid="table"/>
+		SET
+		DEFAULT_TEMPLATE='0'
+	</update>
+
+	<select id="selectOneById" resultType="com.skrivet.supports.menu.dao.core.template.entity.select.MenuTemplateDetailDP"
+			parameterType="string">
+		SELECT
+		<include refid="detailColumns"/>
+		FROM
+		<include refid="tables"/>
+		WHERE a.ID=#{id}
+	</select>
+	
+	<select id="selectPageList" resultType="com.skrivet.supports.menu.dao.core.template.entity.select.MenuTemplateListDP"
+			parameterType="com.skrivet.supports.menu.dao.core.template.entity.select.MenuTemplateSelectPageDQ">
+		SELECT
+		<include refid="listColumns"/>
+		FROM
+		<include refid="tables"/>
+		<include refid="selectPageWheres"/>
+		<include refid="pageOrderCondition"/>
+	</select>
+	<select id="defaultMenuTemplateId" resultType="string">
+		SELECT
+		a.ID
+		FROM
+		<include refid="tables"/>
+		WHERE a.DEFAULT_TEMPLATE='1'
+	</select>
+	<select id="userTemplate" resultType="string">
+		SELECT
+		MENU_TEMPLATE_ID
+		FROM
+		SKRIVET_USER_MENU_TEMPLATE
+		WHERE USER_ID=#{userId}
+	</select>
+	<delete id="deleteUserTemplateByUserId" parameterType="string">
+		DELETE FROM
+		SKRIVET_USER_MENU_TEMPLATE
+		WHERE USER_ID=#{userId}
+	</delete>
+	<insert id="insertUserTemplate" parameterType="string">
+		INSERT INTO SKRIVET_USER_MENU_TEMPLATE(ID,USER_ID,MENU_TEMPLATE_ID) VALUES(#{id},#{userId},#{templateId})
+	</insert>
+	<select id="selectList" resultType="com.skrivet.supports.menu.dao.core.template.entity.select.MenuTemplateListDP" parameterType="string">
+		SELECT
+		<include refid="listColumns"/>
+		FROM
+		<include refid="tables"/>
+	</select>
+	<select id="selectPageCount" resultType="long"
+			parameterType="com.skrivet.supports.menu.dao.core.template.entity.select.MenuTemplateSelectPageDQ">
+		SELECT count(a.ID)
+		FROM
+		<include refid="tables"/>
+		<include refid="selectPageWheres"/>
+	</select>
+	
+	<sql id="tables">
+		skrivet_menu_template a
+	</sql>
+	<sql id="table">
+		skrivet_menu_template
+	</sql>
+
+	<sql id="listColumns">
+			a.ID AS id,
+			a.TEMPLATE_NAME AS templateName,
+			a.DEFAULT_TEMPLATE AS defaultTemplate,
+			a.TEMPLATE_REMARK AS templateRemark
+	</sql>
+	<sql id="detailColumns">
+			a.ID AS id,
+			a.TEMPLATE_NAME AS templateName,
+			a.DEFAULT_TEMPLATE AS defaultTemplate,
+			a.TEMPLATE_REMARK AS templateRemark
+	</sql>
+
+	<sql id="selectPageWheres">
+		<where>
+			<if test='templateName != null and templateName != ""'>
+				AND a.TEMPLATE_NAME like SKRIVET_LIKE('%',#{templateName},'%')
+			</if>
+		</where>
+	</sql>
+
+	<sql id="pageOrderCondition">
+		<choose>
+			<when test='sort=="templateName"'>ORDER BY a.TEMPLATE_NAME ${order}</when>
+		</choose>
+	</sql>
+</mapper>

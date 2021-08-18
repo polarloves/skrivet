@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>supports</artifactId>
+        <groupId>com.skrivet</groupId>
+        <version>1.0.0-RELEASE</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>supports-realm</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>supports-realm-dao-core</module>
+        <module>supports-realm-dao-mongodb</module>
+        <module>supports-realm-dao-mybatis</module>
+        <module>supports-realm-service-core</module>
+        <module>supports-realm-service-impl</module>
+        <module>supports-realm-web-core</module>
+        <module>supports-realm-web-impl</module>
+        <module>supports-realm-dubbo-provider</module>
+        <module>supports-realm-dubbo-consumer</module>
+    </modules>
+
+</project>

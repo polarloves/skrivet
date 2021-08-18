@@ -1,0 +1,44 @@
+logging:
+  config: classpath:logback-cloud.xml
+  path: /home/logs
+dubbo:
+    application:
+        name: test-provider
+    protocol:
+        name: dubbo
+        port: 20880
+    registry:
+        id: dubbo
+        address: nacos://106.12.153.115:8848
+        parameters[namespace]: aa189fb7-2b01-47b9-9800-8cccd3a2520c
+skrivet:
+    project:
+        name: test
+        package: cn.skrivet.test
+    validate:
+        service: true
+    dynamicDatabase: true
+    redis:
+            host: 127.0.0.1
+            port: 6379
+            timeout: 2000
+            jedis:
+                pool:
+                    maxIdle: 10
+                    minIdle: 5
+                    maxActive: 20
+    cache:
+        type: redis
+        value-serialization: json
+    database:
+        all:
+            type: com.zaxxer.hikari.HikariDataSource
+            names: data,realm,authority,code
+            destroyMethod: close
+            default: true
+            properties:
+                username: root
+                password: skrivet2WZN!
+                jdbcUrl: jdbc:mysql://106.12.153.115:3306/skrivet?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+                driverClassName: com.mysql.jdbc.Driver
+                idleTimeout: 30000

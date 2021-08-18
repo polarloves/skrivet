@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>plugins-web</artifactId>
+        <groupId>com.skrivet</groupId>
+        <version>1.0.0-RELEASE</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <UserAgentUtils.version>1.20</UserAgentUtils.version>
+        <javax.servlet.version>3.1.0</javax.servlet.version>
+    </properties>
+    <artifactId>plugins-web-core</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>core-common</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>core-configuration</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>core-toolkit</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>components-swagger</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>${UserAgentUtils.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>plugins-security-core</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>components-orika</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>skrivet</artifactId>
+        <groupId>com.skrivet</groupId>
+        <version>1.0.0-RELEASE</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>components</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>components-redis</module>
+        <module>components-kafka</module>
+        <module>components-shiro</module>
+        <module>components-jwt</module>
+        <module>components-mybatis</module>
+        <module>components-mongodb</module>
+        <module>components-dubbo</module>
+        <module>components-swagger</module>
+        <module>components-orika</module>
+    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>ma.glasnost.orika</groupId>
+            <artifactId>orika-core</artifactId>
+            <version>1.5.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.skrivet</groupId>
+            <artifactId>core-common</artifactId>
+            <version>1.0.0-RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+
+</project>

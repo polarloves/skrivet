@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.data.dao.mybatis.tree.TreeDao">
+    <insert id="insert" parameterType="com.skrivet.supports.data.dao.core.tree.entity.add.TreeAddDQ">
+        INSERT INTO
+        <include refid="table"/>
+        (
+            ID,
+            GROUP_NAME,
+            GROUP_ID,
+            TEXT,
+            VALUE,
+            REMARK,
+            ORDER_NUM,
+            PARENT_ID
+        ) VALUES (
+            #{id},
+            #{groupName},
+            #{groupId},
+            #{text},
+            #{value},
+            #{remark},
+            #{orderNum},
+            #{parentId}
+        )
+    </insert>
+
+    <delete id="deleteById" parameterType="string">
+        DELETE FROM
+        <include refid="table"/>
+        WHERE ID=#{id}
+    </delete>
+
+    <update id="update" parameterType="com.skrivet.supports.data.dao.core.tree.entity.update.TreeUpdateDQ">
+        UPDATE
+        <include refid="table"/>
+        SET
+        GROUP_NAME=#{groupName},
+        GROUP_ID=#{groupId},
+        TEXT=#{text},
+        VALUE=#{value},
+        REMARK=#{remark},
+        ORDER_NUM=#{orderNum},
+        PARENT_ID= #{parentId}
+        WHERE ID=#{id}
+    </update>
+    <select id="selectOneById" resultType="com.skrivet.supports.data.dao.core.tree.entity.select.TreeDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.ID=#{id}
+    </select>
+    <select id="selectOneByValue" resultType="com.skrivet.supports.data.dao.core.tree.entity.select.TreeDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.VALUE=#{value} and a.GROUP_ID=#{groupId}
+    </select>
+
+    <select id="selectListByGroupId" resultType="com.skrivet.supports.data.dao.core.tree.entity.select.TreeListDP"
+            parameterType="string">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.GROUP_ID=#{groupId}
+        ORDER BY a.ORDER_NUM ASC
+    </select>
+    <select id="selectPageList" resultType="com.skrivet.supports.data.dao.core.tree.entity.select.TreeListDP"
+            parameterType="com.skrivet.supports.data.dao.core.tree.entity.select.TreeSelectPageDQ">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+        <include refid="selectPageWheres"/>
+        <include refid="pageOrderCondition"/>
+    </select>
+    <select id="selectPageCount" resultType="long"
+            parameterType="com.skrivet.supports.data.dao.core.tree.entity.select.TreeSelectPageDQ">
+        SELECT count(a.ID)
+        FROM
+        <include refid="tables"/>
+        <include refid="selectPageWheres"/>
+    </select>
+    <select id="groups" resultType="com.skrivet.supports.data.dao.core.tree.entity.select.TreeGroupDP">
+        SELECT DISTINCT GROUP_NAME AS text,GROUP_ID AS value
+        FROM
+        <include refid="table"/>
+        ORDER BY GROUP_NAME ASC
+    </select>
+
+    <sql id="tables">
+		SKRIVET_TREE a
+	</sql>
+    <sql id="table">
+		SKRIVET_TREE
+	</sql>
+
+    <sql id="listColumns">
+			a.ID AS id,
+			a.GROUP_NAME AS groupName,
+			a.GROUP_ID AS groupId,
+			a.TEXT AS text,
+			a.VALUE AS value,
+			a.REMARK AS remark,
+			a.ORDER_NUM AS orderNum,
+			a.PARENT_ID AS parentId
+	</sql>
+    <sql id="detailColumns">
+			a.ID AS id,
+			a.GROUP_NAME AS groupName,
+			a.GROUP_ID AS groupId,
+			a.TEXT AS text,
+			a.VALUE AS value,
+			a.REMARK AS remark,
+			a.ORDER_NUM AS orderNum,
+			a.PARENT_ID AS parentId
+	</sql>
+
+    <sql id="selectPageWheres">
+        <where>
+            <if test="groupName != null and groupName != ''">
+                AND a.GROUP_NAME like SKRIVET_LIKE('%',#{groupName},'%')
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND a.GROUP_ID=#{groupId}
+            </if>
+            <if test="text != null and text != ''">
+                AND a.TEXT like SKRIVET_LIKE('%',#{text},'%')
+            </if>
+            <if test="value != null and value != ''">
+                AND a.VALUE like SKRIVET_LIKE('%',#{value},'%')
+            </if>
+            <if test="remark != null and remark != ''">
+                AND a.REMARK like SKRIVET_LIKE('%',#{remark},'%')
+            </if>
+            <if test="parentId != null and parentId != ''">
+                AND a.PARENT_ID =#{parentId}
+            </if>
+            <if test="orderNum != null">
+                AND a.ORDER_NUM=#{orderNum}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="pageOrderCondition">
+        <if test="sort !=null and sort !=''">
+            <choose>
+                <when test='sort=="groupName"'>ORDER BY a.GROUP_NAME ${order}</when>
+                <when test='sort=="groupId"'>ORDER BY a.GROUP_ID ${order}</when>
+                <when test='sort=="text"'>ORDER BY a.TEXT ${order}</when>
+                <when test='sort=="value"'>ORDER BY a.VALUE ${order}</when>
+                <when test='sort=="orderNum"'>ORDER BY a.ORDER_NUM ${order}</when>
+                <when test='sort=="remark"'>ORDER BY a.REMARK ${order}</when>
+            </choose>
+        </if>
+    </sql>
+</mapper>

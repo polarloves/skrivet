@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.authority.dao.mybatis.role.RoleDao">
+    <insert id="insert" parameterType="com.skrivet.supports.authority.dao.core.role.entity.add.RoleAddDQ">
+        INSERT INTO
+        <include refid="table"/>
+        (
+            ID,
+            VALUE,
+            TEXT,
+            REMARK,
+            ORDER_NUM
+        ) VALUES (
+            #{id},
+            #{value},
+            #{text},
+            #{remark},
+            #{orderNum}
+        )
+    </insert>
+    <insert id="insertUserRoles"
+            parameterType="com.skrivet.supports.authority.dao.core.role.entity.add.UserRoleAddDQ">
+        INSERT INTO
+        <include refid="userRoleTable"/>
+        (
+            ID,
+            USER_ID,
+            ROLE_ID
+        ) VALUES
+        <foreach collection="roles" item="list" index="index" separator=",">
+            (
+                #{list.id},
+                #{userId},
+                #{list.roleId}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteById" parameterType="string">
+       DELETE FROM <include refid="table"/>    where ID=#{id};
+       DELETE FROM  SKRIVET_USER_ROLE  where ROLE_ID=#{id};
+       DELETE FROM  SKRIVET_ROLE_PERMISSION  where ROLE_ID=#{id};
+    </delete>
+    <update id="update"
+            parameterType="com.skrivet.supports.authority.dao.core.role.entity.update.RoleUpdateDQ">
+        UPDATE
+        <include refid="table"/>
+        SET
+        TEXT=#{text},
+        VALUE=#{value},
+        REMARK=#{remark},
+        ORDER_NUM=#{orderNum}
+        WHERE ID=#{id}
+    </update>
+    <select id="selectOneById"
+            resultType="com.skrivet.supports.authority.dao.core.role.entity.select.RoleDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.ID=#{id}
+    </select>
+    <select id="selectOneByValue"
+            resultType="com.skrivet.supports.authority.dao.core.role.entity.select.RoleDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.VALUE=#{value}
+    </select>
+
+    <select id="selectList"
+            resultType="com.skrivet.supports.authority.dao.core.role.entity.select.RoleListDP">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+    </select>
+    <select id="selectUserRoleIds" resultType="string" parameterType="string">
+        SELECT
+        ROLE_ID AS roleId
+        FROM
+        <include refid="userRoleTable"/>
+        WHERE
+        USER_ID=#{userId}
+    </select>
+    <select id="deleteUserRolesByUserId" resultType="long" parameterType="string">
+        DELETE FROM
+        <include refid="userRoleTable"/>
+        WHERE
+        USER_ID=#{userId}
+    </select>
+    <sql id="tables">
+		SKRIVET_ROLE a
+	</sql>
+    <sql id="table">
+		SKRIVET_ROLE
+	</sql>
+    <sql id="userRoleTable">
+		SKRIVET_USER_ROLE
+	</sql>
+
+
+    <sql id="listColumns">
+			a.ID AS id,
+			a.TEXT AS text,
+			a.VALUE AS value,
+			a.REMARK AS remark,
+			a.ORDER_NUM AS orderNum
+	</sql>
+    <sql id="detailColumns">
+			a.ID AS id,
+			a.TEXT AS text,
+			a.VALUE AS value,
+			a.REMARK AS remark,
+			a.ORDER_NUM AS orderNum
+	</sql>
+
+
+</mapper>

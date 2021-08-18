@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.exception.dao.mybatis.ExceptionLogDao">
+	<insert id="insert" parameterType="com.skrivet.supports.exception.dao.core.entity.add.ExceptionLogAddDQ">
+		INSERT INTO
+		<include refid="table"/>
+		(
+			ID,
+			INTERFACE_TAG,
+			EXCEPTION_MSG,
+			EXCEPTION_DETAIL,
+			HAPPEN_TIME
+		) VALUES (
+			#{id},
+			#{interfaceTag},
+			#{exceptionMsg},
+			#{exceptionDetail},
+			#{happenTime}
+		)
+	</insert>
+
+	<delete id="deleteById" parameterType="string">
+		DELETE FROM
+		<include refid="table"/>
+		WHERE ID=#{id}
+	</delete>
+	
+	<select id="selectOneById" resultType="com.skrivet.supports.exception.dao.core.entity.select.ExceptionLogDetailDP"
+			parameterType="string">
+		SELECT
+		<include refid="detailColumns"/>
+		FROM
+		<include refid="tables"/>
+		WHERE a.ID=#{id}
+	</select>
+	
+	<select id="selectPageList" resultType="com.skrivet.supports.exception.dao.core.entity.select.ExceptionLogListDP"
+			parameterType="com.skrivet.supports.exception.dao.core.entity.select.ExceptionLogSelectPageDQ">
+		SELECT
+		<include refid="listColumns"/>
+		FROM
+		<include refid="tables"/>
+		<include refid="selectPageWheres"/>
+		<include refid="pageOrderCondition"/>
+	</select>
+	
+	<select id="selectPageCount" resultType="long"
+			parameterType="com.skrivet.supports.exception.dao.core.entity.select.ExceptionLogSelectPageDQ">
+		SELECT count(a.ID)
+		FROM
+		<include refid="tables"/>
+		<include refid="selectPageWheres"/>
+	</select>
+	
+	<sql id="tables">
+		SKRIVET_EXCEPTION a
+	</sql>
+	<sql id="table">
+		SKRIVET_EXCEPTION
+	</sql>
+
+	<sql id="listColumns">
+			a.ID AS id,
+			a.INTERFACE_TAG AS interfaceTag,
+			a.EXCEPTION_MSG AS exceptionMsg,
+			a.HAPPEN_TIME AS happenTime
+	</sql>
+	<sql id="detailColumns">
+			a.ID AS id,
+			a.INTERFACE_TAG AS interfaceTag,
+			a.EXCEPTION_MSG AS exceptionMsg,
+			a.EXCEPTION_DETAIL AS exceptionDetail,
+			a.HAPPEN_TIME AS happenTime
+	</sql>
+
+	<sql id="selectPageWheres">
+		<where>
+			<if test='interfaceTag != null and interfaceTag != ""'>
+				AND a.INTERFACE_TAG =#{interfaceTag}
+			</if>
+			<if test='startTime != null and startTime != ""'>
+				AND a.HAPPEN_TIME &gt;= #{startTime}
+			</if>
+			<if test='endTime != null and endTime != ""'>
+				AND a.HAPPEN_TIME &lt;= #{endTime}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="pageOrderCondition">
+		<choose>
+			<when test='sort=="interfaceTag"'>ORDER BY a.INTERFACE_TAG ${order}</when>
+			<when test='sort=="happenTime"'>ORDER BY a.HAPPEN_TIME ${order}</when>
+		</choose>
+	</sql>
+</mapper>

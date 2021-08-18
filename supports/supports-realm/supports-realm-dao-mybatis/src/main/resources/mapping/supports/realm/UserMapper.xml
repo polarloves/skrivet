@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.realm.dao.mybatis.user.UserDao">
+
+
+    <insert id="insert" parameterType="com.skrivet.supports.realm.dao.core.user.entity.add.UserAddDQ">
+        INSERT INTO
+        <include refid="table"/>
+        (
+            ID,
+            USER_NAME,
+            PASSWORD,
+            SALT,
+            NICK_NAME,
+            HEAD_PORTRAIT,
+            PHONE,
+            EMAIL,
+            ORG_ID,
+            CREATE_DATE
+        ) VALUES (
+            #{id},
+            #{userName},
+            #{password},
+            #{salt},
+            #{nickName},
+            #{headPortrait},
+            #{phone},
+            #{email},
+            #{orgId},
+            #{createDate}
+        )
+    </insert>
+    <delete id="deleteById" parameterType="string">
+        DELETE FROM <include refid="table" />  WHERE ID=#{id};
+    </delete>
+
+    <update id="update" parameterType="com.skrivet.supports.realm.dao.core.user.entity.update.UserUpdateDQ">
+        UPDATE
+        <include refid="table" />
+        SET
+            HEAD_PORTRAIT=#{headPortrait},
+            NICK_NAME=#{nickName},
+            PHONE=#{phone},
+            EMAIL=#{email},
+            ORG_ID=#{orgId}
+        WHERE ID=#{id}
+    </update>
+    <update id="updateMine" parameterType="com.skrivet.supports.realm.dao.core.user.entity.update.UserUpdateMineDQ">
+        UPDATE
+        <include refid="table" />
+        SET
+        HEAD_PORTRAIT=#{headPortrait},
+        NICK_NAME=#{nickName},
+        PHONE=#{phone},
+        EMAIL=#{email}
+        WHERE ID=#{id}
+    </update>
+
+    <update id="updatePassword" parameterType="com.skrivet.supports.realm.dao.core.user.entity.update.PasswordUpdateDQ">
+        UPDATE
+        <include refid="table" />
+        SET
+            PASSWORD=#{password},
+            SALT=#{salt}
+        WHERE ID=#{id}
+    </update>
+    <update id="enable" parameterType="string">
+        UPDATE
+        <include refid="table" />
+        SET
+        STATE=1,
+        DISABLE_REASON=NULL
+        WHERE ID=#{id}
+    </update>
+    <update id="disable" parameterType="string">
+        UPDATE
+        <include refid="table" />
+        SET
+        STATE=0,
+        DISABLE_REASON=#{reason}
+        WHERE ID=#{id}
+    </update>
+    <select id="selectOneById" resultType="com.skrivet.supports.realm.dao.core.user.entity.select.UserDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns" />
+        FROM
+        <include refid="tables" />
+        WHERE a.ID=#{id}
+    </select>
+
+    <select id="selectPageList" resultType="com.skrivet.supports.realm.dao.core.user.entity.select.UserListDP"
+            parameterType="com.skrivet.supports.realm.dao.core.user.entity.select.UserSelectPageDQ">
+        SELECT <include refid="listColumns" />
+        FROM <include refid="tables" />
+        <include refid="selectPageWheres" />
+        <include refid="pageOrderCondition" />
+    </select>
+    <select id="selectPageCount" resultType="long" parameterType="com.skrivet.supports.realm.dao.core.user.entity.select.UserSelectPageDQ">
+        SELECT count(a.ID)
+        FROM
+        <include refid="tables" />
+        <include refid="selectPageWheres" />
+    </select>
+    <select id="selectSecurityUserByUserName" resultType="com.skrivet.supports.realm.dao.core.user.entity.select.SecurityUserDP" parameterType="string">
+        SELECT
+            a.ID AS  id,
+            a.USER_NAME AS account,
+            a.PASSWORD AS password,
+            a.SALT AS  salt,
+            a.STATE AS state,
+            a.DISABLE_REASON AS disableReason
+        FROM
+        <include refid="tables" />
+        WHERE a.USER_NAME=#{userName}
+    </select>
+    <update id="login" parameterType="string">
+        UPDATE
+        <include refid="table" />
+        SET
+            LAST_LOGIN_IP=#{ip},
+            LOGIN_COUNT=LOGIN_COUNT+1,
+            LAST_LOGIN_DATE=#{lastLoginDate}
+        WHERE USER_NAME=#{userName}
+    </update>
+    <sql id="tables">
+		SKRIVET_USER a
+	</sql>
+    <sql id="table">
+		SKRIVET_USER
+	</sql>
+
+    <sql id="detailColumns">
+            a.ID AS id,
+            a.USER_NAME AS userName,
+            a.PASSWORD AS password,
+            a.SALT AS salt,
+            a.NICK_NAME AS nickName,
+            a.HEAD_PORTRAIT AS headPortrait,
+            a.PHONE AS phone,
+            a.EMAIL AS email,
+            a.ORG_ID AS orgId,
+            a.CREATE_DATE AS createDate,
+            a.LOGIN_COUNT AS loginCount,
+            a.LAST_LOGIN_IP AS lastLoginIp,
+            a.LAST_LOGIN_DATE AS lastLoginDate,
+            a.STATE AS state,
+            a.DISABLE_REASON AS disableReason
+	</sql>
+    <sql id="listColumns">
+			a.ID AS id,
+            a.USER_NAME AS userName,
+            a.NICK_NAME AS nickName,
+            a.HEAD_PORTRAIT AS headPortrait,
+            a.PHONE AS phone,
+            a.EMAIL AS email,
+            a.CREATE_DATE AS createDate,
+            a.LOGIN_COUNT AS loginCount,
+            a.LAST_LOGIN_IP AS lastLoginIp,
+            a.LAST_LOGIN_DATE AS lastLoginDate,
+            a.STATE AS state
+	</sql>
+
+    <sql id="selectPageWheres">
+        <where>
+            <if test="userName != null and userName != ''">
+                AND a.USER_NAME like SKRIVET_LIKE('%',#{userName},'%')
+            </if>
+            <if test="nickName != null and nickName != ''">
+                AND a.NICK_NAME like SKRIVET_LIKE('%',#{nickName},'%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND a.PHONE like SKRIVET_LIKE('%',#{phone},'%')
+            </if>
+            <if test="email != null and email != ''">
+                AND a.EMAIL like SKRIVET_LIKE('%',#{email},'%')
+            </if>
+            <if test="orgId != null and orgId != ''">
+                AND a.ORG_ID=#{orgId}
+            </if>
+            <if test="createDate != null and createDate != ''">
+                AND a.CREATE_DATE =#{createDate}
+            </if>
+            <if test="loginCount != null and loginCount != ''">
+                AND a.LOGIN_COUNT =#{loginCount}
+            </if>
+            <if test="lastLoginIp != null and lastLoginIp != ''">
+                AND a.LAST_LOGIN_IP =#{lastLoginIp}
+            </if>
+            <if test="lastLoginDate != null and lastLoginDate != ''">
+                AND a.LAST_LOGIN_DATE =#{lastLoginDate}
+            </if>
+            <if test="state != null ">
+                AND a.STATE =#{state}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="pageOrderCondition">
+        <if test="sort !=null and sort !=''">
+            <choose>
+                <when test='sort=="userName"'>ORDER BY a.USER_NAME ${order}</when>
+                <when test='sort=="nickName"'>ORDER BY a.NICK_NAME ${order}</when>
+                <when test='sort=="phone"'>ORDER BY a.PHONE ${order}</when>
+                <when test='sort=="email"'>ORDER BY a.EMAIL ${order}</when>
+                <when test='sort=="createDate"'>ORDER BY a.CREATE_DATE ${order}</when>
+                <when test='sort=="loginCount"'>ORDER BY a.LOGIN_COUNT ${order}</when>
+                <when test='sort=="lastLoginIp"'>ORDER BY a.LAST_LOGIN_IP ${order}</when>
+                <when test='sort=="lastLoginDate"'>ORDER BY a.LAST_LOGIN_DATE ${order}</when>
+                <when test='sort=="state"'>ORDER BY a.STATE ${order}</when>
+            </choose>
+        </if>
+    </sql>
+</mapper>

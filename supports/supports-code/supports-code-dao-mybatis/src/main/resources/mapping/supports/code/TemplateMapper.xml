@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skrivet.supports.code.dao.mybatis.template.TemplateDao">
+
+    <insert id="insert" parameterType="com.skrivet.supports.code.dao.core.template.entity.add.TemplateAddDQ">
+        INSERT INTO
+        <include refid="table"/>
+        (
+            ID,
+            TEMPLATE_NAME,
+            TEMPLATE_TYPE,
+            SCOPE,
+            PATH,
+            GROUP_ID,
+            GROUP_NAME
+        ) VALUES (
+            #{id},
+            #{templateName},
+            #{templateType},
+            #{scope},
+            #{path},
+            #{groupId},
+            #{groupName}
+        )
+    </insert>
+    <delete id="deleteById" parameterType="string">
+        DELETE FROM <include refid="table"/> WHERE ID=#{id}
+    </delete>
+    <update id="update" parameterType="com.skrivet.supports.code.dao.core.template.entity.update.TemplateUpdateDQ">
+        UPDATE
+        <include refid="table"/>
+        SET
+            TEMPLATE_NAME= #{templateName},
+            TEMPLATE_TYPE= #{templateType},
+            SCOPE= #{scope},
+            PATH= #{path},
+            GROUP_ID=  #{groupId},
+            GROUP_NAME=  #{groupName}
+        WHERE ID=#{id}
+    </update>
+    <update id="updateTemplateData" parameterType="string">
+        UPDATE
+        <include refid="table"/>
+        SET
+            TEMPLATE_DATA= #{data}
+        WHERE ID=#{id}
+    </update>
+    <select id="selectOneById" resultType="com.skrivet.supports.code.dao.core.template.entity.select.TemplateDetailDP"
+            parameterType="string">
+        SELECT
+        <include refid="detailColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.ID=#{id}
+    </select>
+
+    <select id="selectPageList" resultType="com.skrivet.supports.code.dao.core.template.entity.select.TemplateListDP"
+            parameterType="com.skrivet.supports.code.dao.core.template.entity.select.TemplateSelectPageDQ">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+        <include refid="selectPageWheres"/>
+        <include refid="pageOrderCondition"/>
+    </select>
+    <select id="selectByGroupId" resultType="com.skrivet.supports.code.dao.core.template.entity.select.TemplateListDP"
+            parameterType="string">
+        SELECT
+        <include refid="listColumns"/>
+        FROM
+        <include refid="tables"/>
+        WHERE a.GROUP_ID=#{groupId}
+    </select>
+    <select id="selectPageCount" resultType="long"
+            parameterType="com.skrivet.supports.code.dao.core.template.entity.select.TemplateSelectPageDQ">
+        SELECT count(a.ID)
+        FROM
+        <include refid="tables"/>
+        <include refid="selectPageWheres"/>
+    </select>
+
+    <select id="groups" resultType="com.skrivet.supports.code.dao.core.template.entity.select.TemplateGroupDP">
+        SELECT DISTINCT GROUP_NAME AS text,GROUP_ID AS value
+        FROM
+        <include refid="table"/>
+        ORDER BY GROUP_NAME ASC
+    </select>
+
+    <sql id="tables">
+		SKRIVET_CODE_TEMPLATE a
+	</sql>
+    <sql id="table">
+		SKRIVET_CODE_TEMPLATE
+	</sql>
+    <sql id="listColumns">
+			a.ID AS id,
+            a.TEMPLATE_NAME AS templateName,
+            a.TEMPLATE_TYPE AS templateType,
+            a.SCOPE AS scope,
+            a.PATH AS path,
+            a.GROUP_ID AS groupId,
+            a.GROUP_NAME AS groupName
+	</sql>
+    <sql id="detailColumns">
+			a.ID AS id,
+            a.TEMPLATE_NAME AS templateName,
+            a.TEMPLATE_DATA AS templateData,
+            a.TEMPLATE_TYPE AS templateType,
+            a.SCOPE AS scope,
+            a.PATH AS path,
+            a.GROUP_ID AS groupId,
+            a.GROUP_NAME AS groupName
+	</sql>
+
+    <sql id="selectPageWheres">
+        <where>
+            <if test="templateName != null and templateName != ''">
+                AND a.TEMPLATE_NAME like SKRIVET_LIKE('%',#{templateName},'%')
+            </if>
+            <if test="scope != null and scope != ''">
+                AND a.SCOPE = #{scope}
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND a.GROUP_ID = #{groupId}
+            </if>
+            <if test="templateType != null">
+                AND a.TEMPLATE_TYPE =#{templateType}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="pageOrderCondition">
+        <if test="sort !=null and sort !=''">
+            <choose>
+                <when test='sort=="groupId"'>ORDER BY a.GROUP_ID ${order}</when>
+                <when test='sort=="templateName"'>ORDER BY a.TEMPLATE_NAME ${order}</when>
+            </choose>
+        </if>
+    </sql>
+</mapper>
